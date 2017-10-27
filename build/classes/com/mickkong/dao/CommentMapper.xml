@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mickkong.dao.CommentDao">
+
+	<resultMap type="Comment" id="commentMap">
+		<id column="cid" property="cid" />
+		<result column="aid" property="aid" />
+		<result column="content" property="content" />
+		<result column="time" property="time" />
+		<association property="user" javaType="User">
+			<id column="uid" property="uid"/>
+			<result column="username" property="username" />
+			<result column="password" property="password" />
+			<result column="phone" property="phone" />
+			<result column="email" property="email" />
+			<result column="last_login_time" property="lastLoginTime" />
+		</association>
+	</resultMap>
+	
+	<select id="findById" resultMap="commentMap" parameterType="int">
+		select c.*,u.* from comment c,user u where c.uid=u.uid and cid=#{0}
+	</select>
+	<select id="findAll" resultMap="commentMap" parameterType="int">
+		select c.*,u.* from comment c,user u where c.uid=u.uid and c.aid=#{0} order by time desc
+	</select>
+	<delete id="delete" parameterType="int">
+		delete from comment where cid=#{0}
+	</delete>
+	<insert id="insert" parameterType="Comment">
+		insert into comment (uid,aid,content,time)
+		values (#{user.uid}, #{aid},#{content},#{time})
+	</insert>
+</mapper>

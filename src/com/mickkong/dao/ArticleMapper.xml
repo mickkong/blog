@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mickkong.dao.ArticleDao">
+
+	<resultMap type="Article" id="articleMap">
+		<id column="aid" property="aid" />
+		<result column="title" property="title" />
+		<result column="content" property="content" />
+		<result column="createtime" property="createtime" />
+		<result column="updatetime" property="updatetime" />
+		<result column="readcount" property="readcount" />
+		<association property="author" javaType="User">
+			<id column="uid" property="uid"/>
+			<result column="username" property="username" />
+			<result column="password" property="password" />
+			<result column="phone" property="phone" />
+			<result column="email" property="email" />
+			<result column="last_login_time" property="lastLoginTime" />
+		</association>
+	</resultMap>
+
+	<select id="findById" resultMap="articleMap" parameterType="int">
+		select a.*,u.* from article a,user u where a.uid=u.uid and a.aid=#{0}
+	</select>
+	<select id="findByName" resultMap="articleMap" parameterType="String">
+		select a.*,u.* from article a,user u where a.uid=u.uid and a.title=#{0}
+	</select>
+	<select id="findByUid" resultMap="articleMap" parameterType="String">
+		select a.*,u.* from article a,user u where a.uid=u.uid and a.uid=#{0}
+	</select>
+	<select id="findAll" resultMap="articleMap">
+		select a.*,u.* from article a,user u where a.uid=u.uid order by createtime desc
+	</select>
+	<delete id="delete" parameterType="int">
+		delete from article where aid=#{0}
+	</delete>
+	<insert id="insert" parameterType="Article">
+		insert into article
+		(uid,title,content,createtime,updatetime,readcount)
+		values (#{author.uid},#{title},#{content},#{createtime},#{updatetime},#{readcount})
+	</insert>
+	<update id="update" parameterType="Article">
+		update article set
+		uid=#{author.uid},title=#{title},content=#{content},createtime=#{createtime},updatetime=#{updatetime},readcount=#{readcount}
+		where aid=#{aid}
+	</update>
+</mapper>
